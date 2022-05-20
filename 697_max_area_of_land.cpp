@@ -18,7 +18,8 @@ size_t exploreRegion(vector<vector<int>> &image, const Pos &start, bool (*isVali
     while (!exploreQ.empty())
     {
         Pos curPos = exploreQ.front();
-        auto sr = curPos.first, sc = curPos.second;
+        size_t sr, sc;
+        tie(sr, sc) = curPos;
         exploreQ.pop();
 
         if (image[sr][sc] < 1)
