@@ -7,75 +7,46 @@ using namespace std;
 
 using Pos = std::pair<int, int>;
 
-struct pos_hash
-{
-    template <class T1, class T2>
-    size_t operator()(std::pair<T1, T2> const &pair) const
-    {
-        std::size_t h1 = std::hash<T1>()(pair.first);
-        std::size_t h2 = std::hash<T2>()(pair.second);
-
-        return h1 ^ h2;
-    }
-};
-
-queue<Pos> getExplorable(vector<vector<int>> &image, const Pos &pos, bool (*isValid)(const int &))
-{
-    queue<Pos> result;
-    int sr = pos.first, sc = pos.second;
-    int h = size(image);
-    int w = size(image[0]);
-
-    // Check Up
-    if (sr > 0 && isValid(image[sr - 1][sc]))
-        result.push(Pos({sr - 1, sc}));
-
-    // Check Down
-    if (sr < h - 1 && isValid(image[sr + 1][sc]))
-        result.push(Pos({sr + 1, sc}));
-
-    // Check Left
-    if (sc > 0 && isValid(image[sr][sc - 1]))
-        result.push(Pos({sr, sc - 1}));
-
-    // Check Right
-    if (sc < w - 1 && isValid(image[sr][sc + 1]))
-        result.push(Pos({sr, sc + 1}));
-
-    return result;
-}
-
-size_t exploreRegion(vector<vector<int>> &image, const Pos &start, bool (*isValid)(const int &), void (*updateOperation)(int &old, const int &update))
+size_t exploreRegion(vector<vector<int>> &image, const Pos &start, bool (*isValid)(const int &))
 {
     queue<Pos> exploreQ;
-    unordered_set<Pos, pos_hash> visitedPos;
     exploreQ.push(start);
+    int area = 0;
+    int h = size(image);
+    int w = size(image[0]);
 
     while (!exploreQ.empty())
     {
         Pos curPos = exploreQ.front();
+        auto sr = curPos.first, sc = curPos.second;
         exploreQ.pop();
 
-        if (visitedPos.find(curPos) != visitedPos.end())
+        if (image[sr][sc] < 1)
         {
             // Skip this position, already visited
             continue;
         }
 
-        auto newExplore = getExplorable(image, curPos, isValid);
-        while (!newExplore.empty())
-        {
-            exploreQ.push(newExplore.front());
-            newExplore.pop();
-        }
-        // for (auto pos : newExplore)
-        //     exploreQ.push(pos);
+        // Check Up
+        if (sr > 0 && isValid(image[sr - 1][sc]))
+            exploreQ.push(Pos({sr - 1, sc}));
 
-        visitedPos.insert(curPos);
+        // Check Down
+        if (sr < h - 1 && isValid(image[sr + 1][sc]))
+            exploreQ.push(Pos({sr + 1, sc}));
+
+        // Check Left
+        if (sc > 0 && isValid(image[sr][sc - 1]))
+            exploreQ.push(Pos({sr, sc - 1}));
+
+        // Check Right
+        if (sc < w - 1 && isValid(image[sr][sc + 1]))
+            exploreQ.push(Pos({sr, sc + 1}));
+
+        // }
+        area++;
+        image[sr][sc] = -1;
     }
-    size_t area = visitedPos.size();
-    for (auto pos : visitedPos)
-        updateOperation(image[pos.first][pos.second], -area);
     return area;
 }
 
@@ -85,20 +56,17 @@ int maxAreaOfIsland(vector<vector<int>> &grid)
     auto isValid = [](const int &val)
     { return val > 0; };
 
-    auto updateOpr = [](int &old, const int &update)
-    {old = update;};
-
     size_t h{grid.size()}, w{grid[0].size()};
     for (size_t sr = 0; sr < h; sr++)
     {
         for (size_t sc = 0; sc < w; sc++)
         {
-            // Get current position
-            Pos curPos{sr, sc};
             // Skip if invalid or visited
             if (!isValid(grid[sr][sc]))
                 continue;
-            size_t area = exploreRegion(grid, curPos, isValid, updateOpr);
+            // Get current position
+            Pos curPos{sr, sc};
+            size_t area = exploreRegion(grid, curPos, isValid);
             maxArea = max(maxArea, area);
         }
     }
