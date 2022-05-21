@@ -3,11 +3,12 @@
 
 using namespace std;
 
-#define VOCAB 256
+#define VOCAB 128
+#define BEGIN 'A'
 
 void printArray(size_t *v)
 {
-    for (size_t i = 0; i < VOCAB; ++i)
+    for (size_t i = BEGIN; i < VOCAB; ++i)
     {
         cout << v[i];
     }
@@ -16,7 +17,7 @@ void printArray(size_t *v)
 
 bool isIncluded(size_t *&window, size_t *&vocab)
 {
-    for (int i = 0; i < VOCAB; i++)
+    for (int i = BEGIN; i < VOCAB; i++)
     {
         if (window[i] < vocab[i])
             return false;
@@ -24,7 +25,7 @@ bool isIncluded(size_t *&window, size_t *&vocab)
     return true;
 }
 
-bool validChar(size_t *&window, size_t *&vocab, char c)
+bool isValidChar(size_t *&window, size_t *&vocab, char c)
 {
     return window[c] >= vocab[c];
 }
@@ -106,7 +107,7 @@ string minWindow(string sCheck, string sVocab)
                 // printArray(fWindow);
 
                 // The new window becomes invalid, break out of the loop
-                if (!isIncluded(fWindow, fVocab))
+                if (!isValidChar(fWindow, fVocab, cRemove))
                 {
                     // We found a new local minima, let's check if it's shorter than the previous local minima
                     solutionUpdated = updateSolution(bestSlow, bestFast, slow, fast) || solutionUpdated;
@@ -116,9 +117,10 @@ string minWindow(string sCheck, string sVocab)
             slow += 1;
         }
     }
+    delete[] fVocab;
+    delete[] fWindow;
     return (solutionUpdated) ? sCheck.substr(bestSlow, bestFast - bestSlow + 1) : "";
 }
-
 int main(int argc, char const *argv[])
 {
     string s{"ADOBECODEBANC"}, t{"ABC"};
