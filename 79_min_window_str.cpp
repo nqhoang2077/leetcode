@@ -24,6 +24,11 @@ bool isIncluded(size_t *&window, size_t *&vocab)
     return true;
 }
 
+bool validChar(size_t *&window, size_t *&vocab, char c)
+{
+    return window[c] >= vocab[c];
+}
+
 size_t *charFreq(const string &str)
 {
     size_t *freq = new size_t[VOCAB]{0};
@@ -32,43 +37,58 @@ size_t *charFreq(const string &str)
     return freq;
 }
 
+bool updateSolution(size_t &bestSlow, size_t &bestFast, const size_t &slow, const size_t &fast)
+{
+    if (bestFast - bestSlow > fast - slow)
+    {
+        bestFast = fast;
+        bestSlow = slow;
+
+        return true;
+    }
+    return false;
+}
+
 string minWindow(string sCheck, string sVocab)
 {
     if (sVocab.size() > sCheck.size())
         return "";
     if (sCheck == sVocab)
         return sCheck;
-    size_t minWindowSize{sVocab.size()}, slow{0}, fast{minWindowSize - 1};
-    string defaultResult{sCheck + sVocab};
-    string result{defaultResult}, sWindow{sCheck.substr(slow, minWindowSize)};
+    size_t minWindowSize{sVocab.size()}, slow{0}, fast{minWindowSize - 1}, bestSlow{0}, bestFast{sCheck.size() + sVocab.size()};
+    string sWindow{sCheck.substr(slow, minWindowSize)};
     auto fVocab{charFreq(sVocab)};
     auto fWindow{charFreq(sWindow)};
-    // cout << "Vocab: " <<endl;
-    // printArray(fVocab);
+    bool solutionUpdated = false;
+    bool wasIncluded = isIncluded(fWindow, fVocab);
 
-    if (isIncluded(fWindow, fVocab))
-        result = sWindow;
+    if (wasIncluded)
+        solutionUpdated = updateSolution(bestSlow, bestFast, slow, fast) || solutionUpdated;
 
-    for (fast+=1; fast < sCheck.size(); fast++)
+    for (fast += 1; fast < sCheck.size(); fast++)
     {
         char cAdd = sCheck[fast];
 
         // Skip characters that are not in the Vocab
         // cout << "slow: " << slow << ", fast: " << fast << endl;
-        // cout << "checking string: " << sCheck.substr(slow, fast - slow + 1) << endl;
+
         if (fVocab[cAdd] < 1)
+        {
             continue;
+        }
         // Calculate the new window
         fWindow[cAdd] += 1;
+        // cout << "checking string: " << sCheck.substr(slow, fast - slow + 1) << endl;
+        // printArray(fWindow);
 
         // Check if the new window is valid
         if (isIncluded(fWindow, fVocab))
         {
             // Found a valid window
-            string localMinima = sCheck.substr(slow, fast - slow + 1);
-            cout << "New Valid Window: " << localMinima << endl;
+            // string localMinima = sCheck.substr(slow, fast - slow + 1);
+            // cout << "New Valid Window: " << localMinima << endl;
 
-            result = (localMinima.length() < result.length()) ? localMinima : result;
+            solutionUpdated = updateSolution(bestSlow, bestFast, slow, fast) || solutionUpdated;
             // Now the new valid window is found, try minimize it
             for (slow; slow <= fast; slow++)
             {
@@ -88,26 +108,20 @@ string minWindow(string sCheck, string sVocab)
                 // The new window becomes invalid, break out of the loop
                 if (!isIncluded(fWindow, fVocab))
                 {
-                    // cout << "Can't" << endl;
                     // We found a new local minima, let's check if it's shorter than the previous local minima
-                    localMinima = sCheck.substr(slow, fast - slow + 1);
-                    // cout << "Local minima: " << localMinima << endl;
-                    result = (localMinima.length() < result.length()) ? localMinima : result;
-                    fWindow[cRemove] += 1;
+                    solutionUpdated = updateSolution(bestSlow, bestFast, slow, fast) || solutionUpdated;
                     break;
-                } 
+                }
             }
             slow += 1;
         }
     }
-    // cout << "Result: " << result << endl;
-    result = (result == defaultResult) ? "" : result;
-    return result;
+    return (solutionUpdated) ? sCheck.substr(bestSlow, bestFast - bestSlow + 1) : "";
 }
 
 int main(int argc, char const *argv[])
 {
-    string s{"ab"}, t{"a"};
+    string s{"ADOBECODEBANC"}, t{"ABC"};
 
     cout << minWindow(s, t) << endl;
     return 0;
