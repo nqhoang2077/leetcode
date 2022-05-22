@@ -11,16 +11,15 @@ public:
     vector<int> twoSum(vector<int> &nums, int target)
     {
         unordered_map<int, int> lookupMap;
-        for (int i = 0; i < nums.size(); i++)
-            lookupMap[nums[i]] = i;
 
         int i, n{int(nums.size())};
-        for (i = 0; i < n - 1; ++i)
+        for (i = 0; i < n; ++i)
         {
             auto search = lookupMap.find(target - nums[i]);
             if (search != lookupMap.end() && search->second != i)
-                return vector<int>{i, search->second};  
-            lookupMap.erase(nums[i]);
+                return vector<int>{i, search->second};
+
+            lookupMap[nums[i]] = i;
         }
         return nums;
     }
