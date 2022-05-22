@@ -13,7 +13,7 @@ class Solution
 public:
     size_t palindromes;
 
-    void growPalindromes(string str, PosPair pos)
+    void growPalindromes(const string& str, const PosPair& pos)
     {
         int l, r;
         tie(l, r) = pos;
@@ -33,7 +33,7 @@ public:
         } while (--l >= 0 && ++r < str.length());
     }
 
-    queue<PosPair> findStartPositions(string str)
+    queue<PosPair> findStartPositions(const string& str)
     {
         queue<PosPair> result;
         for (int i = 0; i < str.size() - 1; ++i)
@@ -53,7 +53,7 @@ public:
         return result;
     }
 
-    int countSubstrings(string s)
+    int countSubstrings(const string& s)
     {
         palindromes = 0;
         // Find all start positions
