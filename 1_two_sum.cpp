@@ -18,7 +18,6 @@ public:
             auto search = lookupMap.find(target - nums[i]);
             if (search != lookupMap.end() && search->second != i)
                 return vector<int>{i, search->second};
-
             lookupMap[nums[i]] = i;
         }
         return nums;
