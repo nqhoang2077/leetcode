@@ -5,6 +5,7 @@
         "iostream": "cpp",
         "__locale": "cpp",
         "ostream": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "vector": "cpp"
     }
 }
