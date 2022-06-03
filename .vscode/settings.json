@@ -6,6 +6,9 @@
         "__locale": "cpp",
         "ostream": "cpp",
         "string_view": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "ios": "cpp",
+        "random": "cpp",
+        "*.tcc": "cpp"
     }
 }
