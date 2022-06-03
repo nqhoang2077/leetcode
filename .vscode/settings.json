@@ -9,6 +9,8 @@
         "vector": "cpp",
         "ios": "cpp",
         "random": "cpp",
-        "*.tcc": "cpp"
+        "*.tcc": "cpp",
+        "array": "cpp",
+        "deque": "cpp"
     }
 }

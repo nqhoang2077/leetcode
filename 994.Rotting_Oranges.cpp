@@ -23,25 +23,32 @@ class Solution
     };
 
 public:
-    vector<vector<int>> updateMatrix(vector<vector<int>> &mat)
+    int orangesRotting(vector<vector<int>> &mat)
     {
         auto rows{mat.size()}, cols{mat[0].size()};
-        vector<vector<int>> result{rows};
         queue<position> exploreQ;
+        int time = -1;
         unordered_set<position, pos_hash> visited;
+        int rottenCounts = 0;
+        int freshCounts = 0;
 
         for (int r = 0; r < rows; r++)
         {
-            result[r] = vector<int>(cols, -1);
             for (int c = 0; c < cols; c++)
             {
-                if (mat[r][c] == 0)
+                switch (mat[r][c])
                 {
+                case 2:
                     exploreQ.push({r, c});
-                    result[r][c] = 0;
+                    break;
+                case 1:
+                    freshCounts++;
+                    break;
                 }
             }
         }
+        if (exploreQ.empty())
+            return (freshCounts > 0) ? -1 : 0;
         vector<position> dirs = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
         while (!exploreQ.empty())
         {
@@ -49,23 +56,26 @@ public:
             exploreQ.pop();
             int r, c;
             tie(r, c) = currentPosition;
-            if (visited.find(currentPosition) != visited.end())
-                continue;
+
             visited.insert(currentPosition);
+            time = max(time, mat[r][c]);
+
             for (position p : dirs)
             {
                 int dr, dc;
                 tie(dr, dc) = p;
                 int sr{r - dr}, sc{c - dc};
-                if (sr >= 0 and sc >= 0 and sr < rows and sc < cols and result[sr][sc] == -1)
+                if (sr >= 0 and sc >= 0 and sr < rows and sc < cols and mat[sr][sc] > 0 and mat[sr][sc] < 2 and visited.find({sr, sc}) == visited.end())
                 {
-                    result[sr][sc] = result[r][c] + 1;
+                    ++rottenCounts;
+                    mat[sr][sc] = mat[r][c] + 1;
                     exploreQ.push({sr, sc});
                 }
             }
         }
-        mat.swap(result);
-        return mat;
+        // cout << "Rotten Counts: " << rottenCounts << endl;
+        // cout << "Fresh Counts: " << freshCounts << endl;
+        return (rottenCounts == freshCounts) ? time - 2 : -1;
     }
 };
 
@@ -80,17 +90,18 @@ int main(int argc, char const *argv[])
             cout << endl;
         }
     };
-    vector<vector<int>> test{{1, 1, 0, 0, 1, 0, 0, 1, 1, 0}, {1, 0, 0, 1, 0, 1, 1, 1, 1, 1}, {1, 1, 1, 0, 0, 1, 1, 1, 1, 0}, {0, 1, 1, 1, 0, 1, 1, 1, 1, 1}, {0, 0, 1, 1, 1, 1, 1, 1, 1, 0}, {1, 1, 1, 1, 1, 1, 0, 1, 1, 1}, {0, 1, 1, 1, 1, 1, 1, 0, 0, 1}, {1, 1, 1, 1, 1, 0, 0, 1, 1, 1}, {0, 1, 0, 1, 1, 0, 1, 1, 1, 1}, {1, 1, 1, 0, 1, 0, 1, 1, 1, 1}};
-    vector<vector<int>> answers{{2, 1, 0, 0, 1, 0, 0, 1, 1, 0}, {1, 0, 0, 1, 0, 1, 1, 2, 2, 1}, {1, 1, 1, 0, 0, 1, 2, 2, 1, 0}, {0, 1, 2, 1, 0, 1, 2, 3, 2, 1}, {0, 0, 1, 2, 1, 2, 1, 2, 1, 0}, {1, 1, 2, 3, 2, 1, 0, 1, 1, 1}, {0, 1, 2, 3, 2, 1, 1, 0, 0, 1}, {1, 2, 1, 2, 1, 0, 0, 1, 1, 2}, {0, 1, 0, 1, 1, 0, 1, 2, 2, 3}, {1, 2, 1, 0, 1, 0, 1, 2, 3, 4}};
+    vector<vector<int>> test{{2, 1, 1}, {1, 1, 0}, {0, 1, 1}};
+    // vector<vector<int>> answers{{2, 1, 0, 0, 1, 0, 0, 1, 1, 0}, {1, 0, 0, 1, 0, 1, 1, 2, 2, 1}, {1, 1, 1, 0, 0, 1, 2, 2, 1, 0}, {0, 1, 2, 1, 0, 1, 2, 3, 2, 1}, {0, 0, 1, 2, 1, 2, 1, 2, 1, 0}, {1, 1, 2, 3, 2, 1, 0, 1, 1, 1}, {0, 1, 2, 3, 2, 1, 1, 0, 0, 1}, {1, 2, 1, 2, 1, 0, 0, 1, 1, 2}, {0, 1, 0, 1, 1, 0, 1, 2, 2, 3}, {1, 2, 1, 0, 1, 0, 1, 2, 3, 4}};
 
     Solution solution;
     cout << "Input: " << endl;
     printArray(test);
     cout << "Output: " << endl;
-    solution.updateMatrix(test);
+    int time = solution.orangesRotting(test);
     printArray(test);
+    cout << "Time: " << time << endl;
 
-    cout << "Answers: " << endl;
-    printArray(answers);
+    // cout << "Answers: " << endl;
+    // printArray(answers);
     return 0;
 }
