@@ -35,7 +35,7 @@ public:
         vector<bool> hasFirst(N, false);
         bool hasLast = false;
         hasFirst[0] = true;
-        hasFirst[1] = (nums[1] > nums[0])?false:true;
+        hasFirst[1] = (nums[1] > nums[0]) ? false : true;
 
         for (int i = 2; i < N; ++i)
         {
@@ -46,26 +46,12 @@ public:
             r[i] = max(r[i - 2] + nums[i], r[i - 1]);
             hasFirst[i] = (r[i - 2] + nums[i] > r[i - 1]) ? hasFirst[i - 2] : hasFirst[i - 1];
         }
-        // Debug
-        // cout << "R: " << endl;
-        // printArray(r);
-
-        // cout << "RC: " << endl;
-        // printArray(r_c);
-
-
-        // cout << "H: " << endl;
-        // printArray(hasFirst);
-
-        // cout <<"HL: " << endl;
-        // cout << hasLast << endl;
-
 
         int i = N - 1;
         hasLast = (r[i - 2] + nums[i] > r[i - 1]) ? true : false;
         if (hasFirst[N - 1] and hasLast)
-            return max(r_c[N - 1], r[N-2]);
-        cout << "cc" << endl;
+            return max(r_c[N - 1], r[N - 2]);
+
         return r[N - 1];
     }
 };
@@ -73,7 +59,7 @@ public:
 int main(int argc, char const *argv[])
 {
     Solution s;
-    vector<int> ins{2,1,1,2};
+    vector<int> ins{2, 1, 1, 2};
     auto res = s.rob(ins);
 
     cout << res << endl;
