@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <map>
 #include <unordered_map>
 
 using namespace std;
@@ -19,38 +20,44 @@ public:
 
     int deleteAndEarn(vector<int> &nums)
     {
-        unordered_map<int, int> M;
+        map<int, int> MP;
         auto N{nums.size()};
-        sort(nums.begin(), nums.end(), greater<int>());
         // Create (frequencies * value) Hash Map
         for (auto n : nums)
         {
             try
             {
-                M.at(n) += n;
+                MP.at(n) += n;
             }
             catch (...)
             {
-                M[n] += n;
+                MP[n] += n;
             }
         }
 
-        int i = 0;
-
-        for (auto &m : M)
-        {
-            int k{m.first}, v{m.second};
-            cout << k << " -> " << v << endl;
-        }
+        map<int, int> M(MP.begin(), MP.end());
 
         int res = M.begin()->second;
+        unordered_map<int, int> A;
+
+        
         for (auto it = M.begin(); it != M.end(); ++it){
             int ki{it->first}, vi{it->second};
-            for (auto jt = M.begin(); jt != it; ++jt){
-                int kj{jt->first}, vj{jt->second};
-                res = max(res, vj + ((kj != ki-1)?vi:0));
+            
+            auto jt = it;
+            jt --;
+            int kj{jt->first}, vj{jt->second};
+            
+            if (kj != ki - 1)
+                A[ki] = vi + A[kj];
+            else{
+                jt--;
+                A[ki] = vi + A[jt->first];
             }
-            cout << res << "; ";
+
+            
+            res = max(res, A[ki]);
+            A[ki] = res;
         }
         return res;
     }
@@ -59,8 +66,8 @@ public:
 int main(int argc, char const *argv[])
 {
     Solution s;
-    vector<int> ins{8,10,4,9,1,3,5,9,4,10};
-    // vector<int> ins{3,4,2};
+    // vector<int> ins{};
+    vector<int> ins{3,4,2};
     auto res = s.deleteAndEarn(ins);
 
     cout << res << endl;
