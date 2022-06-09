@@ -30,6 +30,7 @@ public:
     int maxSubarraySumCircular(vector<int> &nums)
     {
         int _max = maxSubArray(nums);
+        // If Current Max is < 0, meaning there are only negative numbers in the array, and this sum is not a subarray but only 1 element which is the largest of the bunch. Since the length of the max-subarray is only 1 element, overlapping or non-overlapping does'nt matter anymore. That's why we return the value immediatly.
         if (_max < 0)
             return _max;
         int _sum = 0;
