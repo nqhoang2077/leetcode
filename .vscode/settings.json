@@ -11,6 +11,8 @@
         "random": "cpp",
         "*.tcc": "cpp",
         "array": "cpp",
-        "deque": "cpp"
+        "deque": "cpp",
+        "chrono": "cpp",
+        "complex": "cpp"
     }
 }
