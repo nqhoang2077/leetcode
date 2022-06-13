@@ -1,18 +1,5 @@
 {
     "files.associations": {
-        "queue": "cpp",
-        "functional": "cpp",
-        "iostream": "cpp",
-        "__locale": "cpp",
-        "ostream": "cpp",
-        "string_view": "cpp",
-        "vector": "cpp",
-        "ios": "cpp",
-        "random": "cpp",
-        "*.tcc": "cpp",
-        "array": "cpp",
-        "deque": "cpp",
-        "chrono": "cpp",
-        "complex": "cpp"
+        "random": "cpp"
     }
 }
