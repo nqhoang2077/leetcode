@@ -16,6 +16,40 @@ public:
         int N = int(nums.size());
         if (N == 1)
             return nums[0] > 0;
+        int maxLen = 0;
+        int curProduct = 1;
+        int start = -1;
+        for (int i = 0; i < N; i++){
+            int ni = (nums[i] > 0) ? 1:((nums[i] == 0) ? 0 : -1);
+            curProduct *= ni;
+            if (curProduct == 0)  {
+                curProduct = 1;
+                start = i;
+            } else if (curProduct > 0){
+                maxLen = max(maxLen, i - start);
+            }
+        }
+
+        curProduct=1;
+        for (int i = N-1; i > 0; i++){
+            int ni = (nums[i] > 0) ? 1:((nums[i] == 0) ? 0 : -1);
+            curProduct *= ni;
+            if (curProduct == 0)  {
+                curProduct = 1;
+                start = i;
+            } else if (curProduct > 0){
+                maxLen = max(maxLen, i - start);
+            }
+        }
+
+        return maxLen;
+    }
+
+    int getMaxLen2(vector<int> &nums)
+    {
+        int N = int(nums.size());
+        if (N == 1)
+            return nums[0] > 0;
         vector<int> posProducts(nums);
         vector<int> posStart(N, -1);
         vector<int> negProducts(nums);
