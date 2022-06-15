@@ -3,6 +3,8 @@
         "random": "cpp",
         "chrono": "cpp",
         "limits": "cpp",
-        "semaphore": "cpp"
+        "semaphore": "cpp",
+        "ostream": "cpp",
+        "iostream": "cpp"
     }
 }
