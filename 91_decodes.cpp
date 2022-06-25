@@ -22,9 +22,6 @@ public:
             if (s[i-1] != '0' and stoi(s.substr(i-1,2)) < 27)
                 W[i] += (i>1)?W[i-2]:1;
         }
-        for (auto w: W) {
-            cout << w << ", " ;
-        }
         return W.back();
     }
 };
